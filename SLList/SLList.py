@@ -8,7 +8,7 @@ class SLList:
     def __init__(self, item=None):
         self.head = self.Node(0, None)
         self.size = 0
-        if item:
+        if not item is None:
             self.head.next = self.Node(item, None)
             self.size += 1
 
@@ -27,7 +27,7 @@ class SLList:
 
     def get(self, idx: int):
         """Get the ith item of the Linked List"""
-        assert idx < self.size - 1, ValueError("Index out of bound when getting item")
+        assert idx < self.size, ValueError("Index out of bound when getting item")
         cur = self.head.next
         for _ in range(idx):
             cur = cur.next
@@ -50,6 +50,7 @@ class SLList:
             if cur.item == item:
                 return idx
             cur = cur.next
+        return -1
 
     def insert(self, idx, item):
         """Insert item at index i"""
@@ -58,6 +59,7 @@ class SLList:
         for _ in range(idx):
             cur = cur.next
         cur.next = self.Node(item, cur.next)
+        self.size += 1
         
 
     def delete(self, idx: int):
@@ -67,9 +69,13 @@ class SLList:
         for _ in range(idx):
             cur = cur.next
         cur.next = cur.next.next
+        self.size -= 1
 
     def myMap(self, func, *args):
         cur = self.head
         for _ in range(self.size):
             cur = cur.next
             cur.item = func(cur.item, *args)
+        
+    def size(self):
+        return self.size
