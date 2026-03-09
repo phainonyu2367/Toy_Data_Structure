@@ -1,5 +1,4 @@
 #include<iostream>
-#include<optional>
 
 template<typename T>
 class SLList {
@@ -11,7 +10,7 @@ class SLList {
                 value = v;
                 next = n;
             }
-        }
+        };
 
         Node* head;
         int size;
@@ -32,7 +31,7 @@ class SLList {
 
         SLList() {
             // Init function of the list, initializing head and size
-            head = new Node();
+            head = new Node(T(), nullptr);
             // Using cache to avoid wasting of time
             size = 0;
         }
@@ -49,6 +48,7 @@ class SLList {
 
         void addFirst(T val) {
             // Add a node to the begining of the list
+            Node* cur = head;
             cur->next = new Node(val, cur->next);
             size++;
         }
@@ -57,9 +57,9 @@ class SLList {
             // Destruction function of the list
             Node* cur = head;
             while (cur != NULL) {
-                head = cur;
+                Node* temp = cur;
                 cur = cur->next;
-                delete head;
+                delete temp;
             }
         }
 
@@ -71,10 +71,11 @@ class SLList {
                 cur = cur->next;
                 delete prev;
             }
+            head->next = NULL;
             size = 0;
         }
 
-        int size() {
+        int getSize() {
             // return the size of the list
             return size;
         }
@@ -88,20 +89,19 @@ class SLList {
                     return idx;
                 }
                 idx++;
+                cur = cur->next;
             }
             return -1;
         }
 
         T get(int idx) {
             // Get the value of ith node.
-            if (idx >= size || idx < 0) {
-                std::cout << "ValueError(get): Invalid index.";
-                return head->value; // because the value type is not sure, so we use the default value in head
+            if (idx >= size || idx < 0) {             
+                throw std::out_of_range("Invalid index."); // because the value type is not sure, so we use the default value in head
             }
             Node* cur = head;
-            while (idx >= 0) {
+            for (int i = 0; i <= idx; i++) {
                 cur = cur->next;
-                idx--;
             }
             return cur->value;
         }
@@ -109,31 +109,31 @@ class SLList {
         void insert(int idx, T val) {
             // Insert a node at position i.
             if (idx < 0 || idx > size) {
-                std::cout << "ValueError(insert): Invalid index."
+                std::cout << "ValueError(insert): Invalid index.";
                 return;
             }
             Node* cur = head;
-            while (idx > 0) {
+            for (int i = 0; i < idx; i++) {
                 cur = cur->next;
-                idx--;
             }
             cur->next = new Node(val, cur->next);
+            size++;
         }
 
         void remove(int idx) {
             // Remove a node at position i.
             if (idx < 0 || idx >= size) {
-                std::cout << "ValueError(remove): Invalid index."
+                std::cout << "ValueError(remove): Invalid index.";
                 return;
             }
             Node* cur = head;
-            while (idx > 0) {
+            for (int i = 0; i < idx; i++) {
                 cur = cur->next;
-                idx--;
             }
             Node* temp = cur->next;
             cur->next = temp->next;
             delete temp;
+            size--;
         }
 
         void set(int idx, T val) {
@@ -142,10 +142,14 @@ class SLList {
                 return;
             }
             Node* cur = head;
-            while (idx >= 0) {
+            for (int i = 0; i <= idx; i++) {
                 cur = cur->next;
-                idx--;
             }
             cur->value = val;
         }
+
+        // 禁用拷贝
+        SLList(const SLList&) = delete;
+        SLList& operator=(const SLList&) = delete;
+    
 };
