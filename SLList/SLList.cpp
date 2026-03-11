@@ -6,14 +6,12 @@ class SLList {
         struct Node {
             T value;
             Node* next;
-            Node(T v, Node* n) {
-                value = v;
-                next = n;
-            }
+            Node(T v, Node* n): value(v), next(n) {}
         };
 
-        Node* head;
         int size;
+        Node* head;
+        Node* tail;
 
     public:
         /*TODO:
@@ -27,22 +25,53 @@ class SLList {
             7. add      ✔️
             8. size     ✔️
             9. get      ✔️
+            10. pointer ✔️
         */ 
+
+        class Iterator {
+            // Enclosured pointer, save to operate meanwhile saved the flexibility of Linked List.
+            private:
+                Node* cur;
+
+            public:
+                Iterator(Node* n): cur(n) {};
+
+                Iterator& operator++() {
+                    if (cur) {
+                        cur = cur->next;
+                    }
+                    return *this;
+                }
+
+                bool operator!=(const Iterator& other) const {
+                    return cur != other.current;
+                }
+
+                T& operator*() const {
+                    return cur->value;
+                }
+
+                Iterator head() {
+                    return Iterator(head);
+                }
+
+                Iterator tail() {
+                    return Iterator(tail);
+                }
+        };
 
         SLList() {
             // Init function of the list, initializing head and size
             head = new Node(T(), nullptr);
             // Using cache to avoid wasting of time
             size = 0;
+            tail = head;
         }
 
         void addLast(T val) {
             // Add a node to the end of the list
-            Node* cur = head;
-            while (cur->next != NULL) {
-                cur = cur->next;
-            }
-            cur->next = new Node(val, NULL);
+            tail->next = new Node(val, NULL);
+            tail = tail->next;
             size++;
         }
 
