@@ -44,21 +44,21 @@ class SLList {
                 }
 
                 bool operator!=(const Iterator& other) const {
-                    return cur != other.current;
+                    return cur != other.cur;
                 }
 
                 T& operator*() const {
                     return cur->value;
                 }
-
-                Iterator head() {
-                    return Iterator(head);
-                }
-
-                Iterator tail() {
-                    return Iterator(tail);
-                }
         };
+
+        Iterator begin() {
+            return ++Iterator(head);
+        }
+
+        Iterator end() {
+            return Iterator(tail);
+        }
 
         SLList() {
             // Init function of the list, initializing head and size
@@ -79,6 +79,7 @@ class SLList {
             // Add a node to the begining of the list
             Node* cur = head;
             cur->next = new Node(val, cur->next);
+            if (cur->next->next == nullptr) tail = cur->next;
             size++;
         }
 
@@ -101,15 +102,16 @@ class SLList {
                 delete prev;
             }
             head->next = NULL;
+            tail = head;
             size = 0;
         }
 
-        int getSize() {
+        int getSize() const {
             // return the size of the list
             return size;
         }
 
-        int findPos(T val) {
+        int findPos(T val) const {
             // Return the index of the first node which have the target value in the list
             int idx = 0;
             Node* cur = head->next;
@@ -123,7 +125,7 @@ class SLList {
             return -1;
         }
 
-        T get(int idx) {
+        T get(int idx) const {
             // Get the value of ith node.
             if (idx >= size || idx < 0) {             
                 throw std::out_of_range("Invalid index."); // because the value type is not sure, so we use the default value in head
@@ -146,6 +148,7 @@ class SLList {
                 cur = cur->next;
             }
             cur->next = new Node(val, cur->next);
+            if (idx == size) tail = cur->next;
             size++;
         }
 
@@ -161,6 +164,7 @@ class SLList {
             }
             Node* temp = cur->next;
             cur->next = temp->next;
+            if (cur->next == nullptr) tail = cur;
             delete temp;
             size--;
         }
@@ -178,7 +182,37 @@ class SLList {
         }
 
         // 禁用拷贝
-        SLList(const SLList&) = delete;
-        SLList& operator=(const SLList&) = delete;
-    
+        SLList(const SLList& p) {
+            head = new Node(T(), nullptr);
+            tail = head;
+            Node* cur = p.head->next;
+            while (cur != nullptr) {
+                this->addLast(cur->value);
+                cur = cur->next;
+            }
+        }
+
+        SLList& operator=(const SLList& p) {
+            // 自赋值检查
+            if (this == &p) {
+                return *this;
+            }
+
+            Node* cur = head->next;
+            while (cur != nullptr) {
+                Node* temp = cur;
+                cur = cur->next;
+                delete temp; // 释放旧节点内存
+            }
+            // 重置 head 和 tail
+            head->next = nullptr; 
+            tail = head;
+            cur = p.head->next;
+            while (cur != nullptr) {
+                this->addLast(cur->value);
+                cur = cur->next;
+            }
+
+            return *this;
+        }
 };
