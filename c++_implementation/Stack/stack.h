@@ -2,7 +2,7 @@
 # define stack_h
 # include <string>
 
-template<class T>
+template<typename T>
 class Stack {
     // 基于数组的栈声明
     private:
@@ -21,14 +21,14 @@ class Stack {
         bool isempty() const;
 };
 
-template<class T>
+template<typename T>
 Stack<T>::Stack() {
     maxsize=20;
     idx = -1;
     data = new T[maxsize];
 }
 
-template<class T>
+template<typename T>
 void Stack<T>::doubleSize() {
     // 默认调用doublesize的时候是栈满的时候
     T* temp = new T[maxsize * 2];
@@ -40,13 +40,13 @@ void Stack<T>::doubleSize() {
     data = temp;
 }
 
-template<class T>
+template<typename T>
 void Stack<T>::push(const T& val) {
     if (idx == maxsize - 1) doubleSize();
     idx++; data[idx] = val;
 }
 
-template<class T>
+template<typename T>
 T Stack<T>::pop() {
     if (idx == -1) {
         std::cerr << "Error, the stack is empty, cannot pop.";
@@ -54,12 +54,12 @@ T Stack<T>::pop() {
     return data[idx--];
 }
 
-template<class T>
+template<typename T>
 bool Stack<T>::isempty() const {
     return idx == -1;
 }
 
-template<class T>
+template<typename T>
 T Stack<T>::top() const {
     if (isempty()) {
         std::cerr << "Error, the stack is empty, cannot get top.";
