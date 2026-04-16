@@ -1,3 +1,5 @@
+#include <iostream>
+
 class Solution {
 public:
     int addDigits(int num) {
@@ -13,3 +15,16 @@ public:
         }
     }
 };
+
+int main() {
+    int input;
+    Solution sol;
+    while (true) {
+        std::cin >> input;
+        if (input < 0) {
+            return 0;
+        }
+        std::cout << "input:" << input << std::endl;
+        std::cout << "output:" << sol.addDigits(input) << std::endl;
+    }
+}
