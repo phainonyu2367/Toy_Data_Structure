@@ -11,14 +11,15 @@ class PriorityQueue {
             for (int i = 0; i < size; ++i) {
                 newValues[i] = values[i];
             }
+            delete [] values;
             values = newValues;
             length = newSize;
         }
 
         void swap(int a, int b) {
-            values[a] = values[a] + values[b];
-            values[b] = values[a] - values[b];
-            values[a] = values[a] - values[b];
+            int tmp = values[a];
+            values[a] = values[b];
+            values[b] = tmp;
         }
 
         void heapifyUp(int index) {
@@ -30,16 +31,19 @@ class PriorityQueue {
         }
 
         void heapifyDown(int index) {
-            if (index >= size || values[index] <= values[2*index + 1] || values[index] <= values[2*index + 2]) {
-                return;
+            int left = 2 * index + 1;
+            int right = 2 * index + 2;
+            int smallest = index;
+
+            if (left < size && values[left] < values[smallest]) {
+                smallest = left;
             }
-            if (values[index] > values[2*index + 1]) {
-                swap(index, 2*index + 1);
-                heapifyDown(2*index + 1);
-                return;
-            } else if (values[index] > values[2*index + 2]) {
-                swap(index, 2*index + 2);
-                heapifyDown(2*index + 2);
+            if (right < size && values[right] < values[smallest]) {
+                smallest = right;
+            }
+            if (smallest != index) {
+                swap(smallest, index);
+                heapifyDown(smallest);
             }
         }
 
@@ -56,14 +60,17 @@ class PriorityQueue {
         
         void push(int value) {
             values[size] = value;
-            size += 1;
             heapifyUp(size);
+            size += 1;
             if (size == length) {
                 resize(2 * length);
             }
         }
 
         int pop() {
+            if (size == 0) {
+                return -1;
+            }
             int value = values[0];
             values[0] = values[size - 1];
             size -= 1;
