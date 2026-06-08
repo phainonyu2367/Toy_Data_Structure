@@ -1,5 +1,6 @@
 #include <vector>
-void partition(std::vector<int> values, int low, int high) {
+
+void partition(std::vector<int>& values, int low, int high) {
     int left, right, hole;
     while (low < high) {
         left = low;
@@ -10,7 +11,7 @@ void partition(std::vector<int> values, int low, int high) {
                 right -= 1;
             }
             values[left] = values[right];
-            while (values[left] <= hole) {
+            while (values[left] <= hole && left < right) {
                 left += 1;
             }
             values[right] = values[left];
@@ -21,7 +22,6 @@ void partition(std::vector<int> values, int low, int high) {
     }
 }
 
-void quickSort(std::vector<int> values) {
+void quickSort(std::vector<int>& values) {
     partition(values, 0, values.size() - 1);
 }   
-

@@ -79,3 +79,14 @@ class PriorityQueue {
             return value;
         }
 };
+
+void heapSort(int* values, int size) {
+    PriorityQueue heap;
+    for (int i = 0; i < size; ++i) {
+        heap.push(values[i]);
+    }
+
+    for (int i = 0; i < size; ++i) {
+        values[i] = heap.pop();
+    }
+}

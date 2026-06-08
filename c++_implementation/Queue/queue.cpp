@@ -1,5 +1,3 @@
-#include <iostream>
-
 class Queue {
     private:
         int* values;
