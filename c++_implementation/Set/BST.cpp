@@ -1,128 +1,115 @@
+struct Node {
+    int value;
+    Node* left;
+    Node* right;
+    Node(int v, Node* l, Node* r): value(v), left(l), right(r) {};
+};
+
 class BST {
     private:
-        struct Node {
-            int value;
-            Node* left;
-            Node* right;
-            Node(int val, Node* l=nullptr, Node* r=nullptr): value(val), left(l), right(l) {};
-        };
         Node* root;
+        int size;
 
-        void removeNode(Node* root, Node* prev, bool leftChild) {
-            bool tmpPrev = false;
-            Node* cur = root;
-            if (prev == nullptr) {
-                prev = new Node(-1);
-                tmpPrev = true;
-            }
-
-            if (cur->left == nullptr && cur->right == nullptr) {
-                if (leftChild) {
-                    prev->left = nullptr;
-                } else {
-                    prev->right = nullptr;
-                }
-                delete cur;
-            } else if (cur->left == nullptr && cur->right != nullptr) {
-                if (leftChild) {
-                    prev->left = cur->right;
-                } else {
-                    prev->right = cur->right;
-                }
-                delete cur;
-            } else if (cur->left != nullptr && cur->right == nullptr) {
-                if (leftChild) {
-                    prev->left = cur->left;
-                } else {
-                    prev->right = cur->left;
-                }
-                delete cur;
-            } else {
-                if (tmpPrev) {
-                    delete prev;
-                }
-                prev = cur;
-                cur = cur->left;
+        void removeNode(Node* target, Node* parent) {
+            // 当target左子节点存在时可以不用删除节点，即不用更新parent的子节点连接
+            if (target->left != nullptr) { // 第一种情况，target左子节点存在，将左边的最右节点值换上来，再递归remove左边的最右节点
+                Node* cur = target->left;
+                parent = target;
                 while (cur->right != nullptr) {
-                    prev = cur;
+                    parent = cur;
                     cur = cur->right;
                 }
-                root->value = cur->value;
-                removeNode(cur, prev, leftChild);
+                target->value = cur->value;
+                if (parent->left == cur) {
+                    parent->left = cur->left;
+                } else {
+                    parent->right = cur->left;
+                }
+                delete cur;
+                return; 
             }
+
+            if (parent != nullptr) { 
+                if (parent->left == target) {
+                    parent->left = target->right;
+                } else {
+                    parent->right = target->right;
+                }
+            }
+
+            if (target == root) {
+                root = target->right;
+            }
+            delete target;
         }
 
     public:
+        BST() {
+            root = nullptr;
+            size = 0;
+        }
+
+        int treeSize() {
+            return size;
+        }
+
         bool contains(int value) {
             Node* cur = root;
             while (cur != nullptr) {
                 if (value > cur->value) {
                     cur = cur->right;
-                }
-
-                if (value < cur->value) {
+                } else if (value < cur->value) {
                     cur = cur->left;
-                }
-
-                if (value == cur->value) {
+                } else {
                     return true;
                 }
-            }  
+            }
             return false;
         }
 
         void add(int value) {
-            Node* cur = root;
-            if (root == nullptr) {
-                root = new Node(value);
+            if (size == 0) {
+                root = new Node(value, nullptr, nullptr);
+                size += 1;
                 return;
             }
 
-            while (true) {
+            Node *cur = root, *prev = nullptr;
+            while (cur != nullptr) {
                 if (value > cur->value) {
-                    if (cur->right == nullptr) {
-                        cur->right = new Node(value);
-                        return;
-                    }
+                    prev = cur;
                     cur = cur->right;
-                }
-
-                if (value < cur->value) {
-                    if (cur->left == nullptr) {
-                        cur->left = new Node(value);
-                        return;
-                    }
+                } else if (value < cur->value) {
+                    prev = cur;
                     cur = cur->left;
-                }
-
-                if (value == cur->value) {
+                } else {
                     return;
                 }
             }
+
+            if (value > prev->value) {
+                cur = new Node(value, nullptr, nullptr);
+                prev->right = cur;
+            } else {
+                cur = new Node(value, nullptr, nullptr);
+                prev->left = cur;
+            }
         }
 
-        void remove(int value, Node* cur=nullptr, Node* prev=nullptr) {
-            if (cur == nullptr) {
-                cur = root;
-            }
-            bool leftChild = false;
+        void remove(int value) {
+            Node *parent = nullptr, *cur = root;
             while (cur != nullptr) {
-                if (cur->value == value) {
-                    break;
-                }
-
-                if (cur->value > value) {
-                    prev = cur;
+                if (value > cur->value) {
+                    parent = cur;
                     cur = cur->right;
-                    leftChild = false;
-                }
-
-                if (cur->value < value) {
-                    prev = cur;
+                } else if (value < cur->value) {
+                    parent = cur;
                     cur = cur->left;
-                    leftChild = true;
+                } else {
+                    removeNode(cur, parent);
+                    size -= 1;
+                    return;
                 }
             }
-            removeNode(cur, prev, leftChild);
         }
 };
