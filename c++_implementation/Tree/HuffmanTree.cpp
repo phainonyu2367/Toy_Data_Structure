@@ -13,7 +13,7 @@ struct NodeComparator {
     }
 };
 
-Node* buildHuffmanTree(std::priority_queue<Node*, std::vector<Node*>, NodeComparator> nodes) {
+Node* buildHuffmanTree(std::priority_queue<Node*, std::vector<Node*>, NodeComparator>& nodes) {
     if (nodes.empty()) {
         return nullptr;
     }

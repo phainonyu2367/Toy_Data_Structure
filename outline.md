@@ -25,6 +25,7 @@
 19. Weighted Quick Union ✅
 20. B-tree
 21. B+-Tree
+22. Huffman Tree
 
 
 ## Algorithms
@@ -37,7 +38,7 @@
 7. Topological Sort (AOV)
 8. Key Path (AOE)
 9. Selection Sort ✅
-10. Heap Sort
+10. Heap Sort ✅
 11. Merge Sort ✅
 12. Insertion Sort ✅
 13. Quick Sort ✅
