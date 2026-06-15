@@ -55,16 +55,16 @@ class AVLTree {
             } else if (cur->value > value) { // 进入左子树
                 insert(value, cur->left);
                 if (height(cur->left) - height(cur->right) == 2) { // 进入左子树导致Avl树左偏失衡
-                    if (value > cur->left->value) { // cur往左走了，同时失衡保证左子节点一定存在
-                        LL(cur);
-                    } else {
+                    if (value > cur->left->value) { 
                         LR(cur);
+                    } else {
+                        LL(cur);
                     }
                 }
             } else if (cur->value < value) { // 进入右子树
                 insert(value, cur->right);
-                if (height(cur->left) - height(cur->right) == 2) {
-                    if (value > cur->right->value) {
+                if (height(cur->left) - height(cur->right) == -2) {
+                    if (value < cur->right->value) {
                         RL(cur);
                     } else {
                         RR(cur);
@@ -89,15 +89,14 @@ class AVLTree {
 
                 if (height(cur->left) - height(cur->right) == 2) { // 高度改变且失衡
                     // 需要判断是LL失衡还是LR失衡
-                    if (height(cur->left->left) > height(cur->left->right)) { // LL失衡
-                        LL(cur);
-                        return height(cur->right) != height(cur->left);
-                    } else {
+                    if (height(cur->left->left) < height(cur->left->right)) { 
                         LR(cur);
                         return false;
+                    } else {
+                        LL(cur);
+                        return height(cur->right) != height(cur->left);
                     }
                 } 
-
             } else {
                 if (height(cur->left) - height(cur->right) == -1) {
                     return true;
@@ -109,15 +108,17 @@ class AVLTree {
                 }
 
                 if (height(cur->left) - height(cur->right) == -2) {
-                    if (height(cur->right->right) > height(cur->right->left)) {
-                        RR(cur);
-                        return height(cur->right) != height(cur->left);
-                    } else {
+                    if (height(cur->right->right) < height(cur->right->left)) {
                         RL(cur);
                         return false;
+                    } else {
+                        RR(cur);
+                        return height(cur->right) != height(cur->left);
                     }
                 }
             }
+
+            return true;
         }
 
         bool remove(const int& value, Node*& cur) { // 返回信号给上一阶递归函数确定是否是有高度变化
@@ -126,7 +127,7 @@ class AVLTree {
             }
 
             if (cur->value == value) { // 找到了要删除的节点
-                if (cur->left == nullptr || cur->left == nullptr) { // 有0或者1个子节点
+                if (cur->left == nullptr || cur->right == nullptr) { // 有0或者1个子节点
                     Node* tmp = cur;
                     cur = (cur->left != nullptr) ? cur->left: cur->right;
                     delete tmp;
@@ -141,20 +142,20 @@ class AVLTree {
                         // note: 这里必须从右子树节点开始删除，才能保证这中间的avl更新是正确的，不可以只删除tmp(在BST中就可以)。
                         return true;
                     }
-                    return adjust(cur, 1); // 修正右子树变化带来的Avl失衡
+                    return adjust(cur, true); // 修正右子树变化带来的Avl失衡
                 }
+            }
 
-                if (cur->value > value) { // 往左子树递归删除
-                    if (remove(value, cur->left)) {
-                        return true;
-                    }
-                    return adjust(cur, 0);
-                } else { // 往右子树递归删除
-                    if (remove(value, cur->left)) {
-                        return true;
-                    }
-                    return adjust(cur, 1);
+            if (cur->value > value) { // 往左子树递归删除
+                if (remove(value, cur->left)) {
+                    return true;
                 }
+                return adjust(cur, false);
+            } else { // 往右子树递归删除
+                if (remove(value, cur->right)) {
+                    return true;
+                }
+                return adjust(cur, true);
             }
         }
 
