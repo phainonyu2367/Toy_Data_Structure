@@ -14,7 +14,7 @@
 6. Priority Queue ✅
 7. Binary Search Tree ✅
 8. Hash Set ✅
-9. AVL Tree
+9. AVL Tree ✅
 10. Adjacency Matrix ✅
 11. Adjacency List ✅
 12. Quad Tree
@@ -23,8 +23,8 @@
 17. Quick Find ✅
 18. Quick Union ✅
 19. Weighted Quick Union ✅
-20. B-tree
-21. B+-Tree
+20. B-tree ✅(not implemented, but understood)
+21. B+-Tree ✅(not implemented, but understood)
 22. Huffman Tree
 
 
@@ -35,7 +35,7 @@
 4. A* Algorithm (shortest weighted path)
 5. Prim's Algorithm (minimum spanning tree)
 6. Kruskal Algorithm (minimum spanning tree)
-7. Topological Sort (AOV)
+7. Topological Sort (AOV) ✅
 8. Key Path (AOE)
 9. Selection Sort ✅
 10. Heap Sort ✅
@@ -44,4 +44,4 @@
 13. Quick Sort ✅
 14. Shell Sort ✅
 15. Bubble Sort ✅
-16. tarjan strong-connectivity
+16. tarjan strong-connectivity ✅
